@@ -1,0 +1,52 @@
+data = read.csv("C:\\Users\\adria\\OneDrive - Ridge point\\Desktop\\STSM2616\\Portifolio\\Confidence interval example.csv")
+Sample1= sample(data$GDP.growth...., size =30, replace=T)
+Average_of_sample=mean(Sample1)
+Standard_deviation_of_sample=sd(Sample1)
+#I want to calculate a 95% confidence interval
+Margin_of_error=1.96*(Standard_deviation_of_sample/sqrt(30))
+lower_bound=Average_of_sample-Margin_of_error
+upper_bound=Average_of_sample+Margin_of_error
+#So my interval is from
+cat("95% CI: (",lower_bound, ",",upper_bound,")", sep="")
+# But we can calculate the true mean and compare it to the sample mean. In real life this will
+# not be possible.
+Mean_of_data=mean(data$GDP.growth....)
+cat("Data mean",Mean_of_data)
+cat("Sample mean",Average_of_sample)
+# Here I asked Grok AI to help me graph the true mean
+# and the sample mean with the confidence interval.
+# I also added a normal distribution curve.
+# Calculate the standard error for the normal distribution
+standard_error = Standard_deviation_of_sample / sqrt(30)
+# Set a zoom margin for the x-axis (controls zoom level)
+zoom_margin = 1.5 * Margin_of_error  # Adjust this multiplier to zoom in  or out
+# Set baseline for the normal curve on the y-axis
+baseline = 0.9
+# Calculate x-values for the normal curve (GDP Growth range)
+x_vals = seq(min(lower_bound, Mean_of_data) - zoom_margin, 
+             max(upper_bound, Mean_of_data) + zoom_margin, length.out = 100)
+# Calculate density values for the normal distribution
+density_vals = dnorm(x_vals, mean = Average_of_sample, sd = standard_error)
+# Scale the density to have a maximum height of 0.2 on the y-axis
+max_density = max(density_vals)
+scaled_density = density_vals * (0.2 / max_density)
+# Create the plot with GDP Growth on the x-axis
+plot(Average_of_sample, 1, 
+     xlim = c(min(x_vals), max(x_vals)),
+     ylim = c(min(0.9, 1 - zoom_margin), max(1.1, 1 + zoom_margin)),
+     pch = 16, col = "blue", 
+     xlab = "GDP Growth", ylab = "",
+     main = "95% Confidence Interval and True Mean", 
+     yaxt = "n")  # Suppress y-axis labels
+# Add the confidence interval as a horizontal bar at y = 1
+segments(lower_bound, 1, upper_bound, 1, col = "blue", lwd = 2)
+# Add the true mean as a vertical line
+abline(v = Mean_of_data, col = "red", lty = 2, lwd = 2)
+# Add the normal distribution curve at y = baseline + scaled_density
+lines(x_vals, baseline + scaled_density, col = "green", lwd = 2)
+# Add a legend
+legend("topright", 
+       legend = c("Sample Mean & CI", "True Mean", "Normal Dist. of Sample Mean"), 
+       col = c("blue", "red", "green"), 
+       lty = c(1, 2, 1), lwd = 2,
+       cex=0.6)
