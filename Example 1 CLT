@@ -1,0 +1,15 @@
+population1 = runif(1000,0,1)
+sample_size1=30
+total_samples1= 1000 
+sample_means1 = replicate(total_samples1, mean(sample(population1, sample_size1, replace = T)))
+hist(sample_means1,breaks= 20, main = "Distribution of Sample Means", xlab = "Sample Mean")
+population2 =rexp(1000,1)
+sample_size2=10
+total_samples2=100
+sample_means2= replicate(total_samples2,mean(sample(population2, sample_size2,replace=T)))
+hist(sample_means2, breaks =20, main ="Distribution of Sample Means", xlab = "Sample Mean")
+population3 =rexp(1000,1)
+sample_size3=30
+total_samples3=1000
+sample_means3= replicate(total_samples3,mean(sample(population3, sample_size3,replace=T)))
+hist(sample_means3, breaks =20, main ="Distribution of Sample Means", xlab = "Sample Mean")
