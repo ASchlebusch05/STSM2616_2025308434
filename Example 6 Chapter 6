@@ -1,0 +1,20 @@
+#Goodness of fit test
+cat("Null hypothesis: The data follows a bin(3,0.05) distribution.")
+cat("Alternative hypothesis: The data does not follow a bin(3,0.5) distribution.")
+
+obs=c(12,31,36,21)
+# Propabilities from the binomial distribution
+expected_prop=dbinom(0:3,3,0.5)
+expected_prop
+cat("Now we use the function built in R.")
+chisq.test(obs,p=expected_prop)
+cat("Since p-value>0.05 , we fail to reject the Null hypothesis")
+
+cat("Or you can calculate everything seperately")
+expected=expected_prop*100
+expected
+chi_stat=sum((obs-expected)^2 / expected)
+chi_stat
+p=1-pchisq(chi_stat,3)
+p
+cat("The chi_stat and the p values are the same if you do it seperately or using the built in function")
