@@ -1,0 +1,18 @@
+#Anova test
+library(tidyverse)
+library(palmerpenguins)
+cat("Null hypothesis: Species does not help explain flipper length.")
+cat("Alternative hypothesis: Species does help explain flipper length .")
+data=penguins
+ggplot(data,aes(x=species, y=flipper_length_mm))+
+  geom_boxplot()
+ggplot(data,aes(x=flipper_length_mm,fill=species))+
+  geom_histogram(aes(y=..density..))+geom_density()+
+  facet_wrap(~species,ncol=1)
+penguins%>%
+  group_by(species)%>%
+  summarise(var(flipper_length_mm,na.rm=T))
+
+model=aov(flipper_length_mm ~ species,data=penguins)
+summary(model)
+cat("The p-value is less than the significance level,so we reject the null hypothesis.")
