@@ -1,0 +1,74 @@
+population=1:100
+n=12
+number_n=100
+sample_means=replicate(number_n,{mean(sample(population,size=n,replace=F))})
+library(ggplot2)
+data=data.frame(sample_means=sample_means)
+ggplot(data,aes(x=sample_means))+geom_histogram(aes(y=..density..),fill="blue",color="black")+
+  geom_density(color="darkblue")+labs(x="Sample mean",y="Density")
+
+stratas2=list(
+  stratum1=1:50,
+  stratum2=51:100
+)
+strat_means2=replicate(number_n,{
+  sample_s1=sample(stratas2$stratum1,size=6,replace=F)
+  sample_s2=sample(stratas2$stratum2,size=6,replace=F)
+  mean(c(sample_s1,sample_s2))
+})
+stratas4=list(
+  stratum1=1:25,
+  stratum2=26:50,
+  stratum3=51:75,
+  stratum4=76:100
+)
+strat_means4=replicate(number_n,{
+  sample_s1=sample(stratas4$stratum1,size=3,replace=F)
+  sample_s2=sample(stratas4$stratum2,size=3,replace=F)
+  sample_s3=sample(stratas4$stratum3,size=3,replace=F)
+  sample_s4=sample(stratas4$stratum4,size=3,replace=F)
+  mean(c(sample_s1,sample_s2,sample_s3,sample_s4))
+})
+#Here Claude did help me a lot
+data=data.frame(Method=rep(c("SRS","Stratified2","Stratified4"),each=number_n),
+                SampleMean=c(sample_means,strat_means2,strat_means4))
+ggplot(data,aes(x=SampleMean,fill=Method))+
+  geom_density(alpha=0.5)+
+  labs(title="Comparison",x="Sample Mean",y="Density")+
+  theme_minimal() +
+  scale_fill_brewer(palette = "Set1")
+  
+
+ggplot(data, aes(x = SampleMean, fill = Method)) +
+  geom_histogram(aes(y = ..density..), bins = 15, alpha = 0.7) +
+  geom_density(color = "black", alpha = 0.3) +
+  facet_wrap(~ Method, ncol = 1) +
+  labs(title = "Sampling Distributions by Method",
+       x = "Sample Mean", 
+       y = "Density") +
+  theme_minimal() +
+  scale_fill_brewer(palette = "Set1")
+
+
+
+library(gridExtra)
+
+p1 <- ggplot(subset(data, Method == "SRS"), aes(x = SampleMean)) +
+  geom_histogram(aes(y = ..density..), fill = "coral", color = "black") +
+  geom_density(color = "darkred") +
+  labs(title = "Simple Random Sampling", x = "Sample Mean", y = "Density") +
+  theme_minimal()
+
+p2 <- ggplot(subset(data, Method == "Stratified2"), aes(x = SampleMean)) +
+  geom_histogram(aes(y = ..density..), fill = "skyblue", color = "black") +
+  geom_density(color = "darkblue") +
+  labs(title = "Stratified Sampling (2 strata)", x = "Sample Mean", y = "Density") +
+  theme_minimal()
+
+p3 <- ggplot(subset(data, Method == "Stratified4"), aes(x = SampleMean)) +
+  geom_histogram(aes(y = ..density..), fill = "lightgreen", color = "black") +
+  geom_density(color = "darkgreen") +
+  labs(title = "Stratified Sampling (4 strata)", x = "Sample Mean", y = "Density") +
+  theme_minimal()
+
+grid.arrange(p1, p2, p3, ncol = 1)
