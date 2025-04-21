@@ -1,4 +1,4 @@
-data=read.csv("C:\\Users\\adria\\OneDrive - Ridge point\\Desktop\\Rice datasets\\Excel Comma\\Chapter 7\\cancer.csv")
+#load the data and save to a variable
 data
 library(ggplot2)
 cat("a,\n")
@@ -14,22 +14,23 @@ pop_sd=sqrt(pop_var)
 pop_sd
 cat("c,\n")
 n=25
-sample_means=replicate(300,{mean(sample(data$X1,size=n,replace=F))})
+N=nrow(data)
+sample_means=replicate(N,{mean(sample(data$X1,size=n,replace=F))})
 hist=data.frame(sample_means=sample_means)
 ggplot(hist,aes(x=sample_means))+geom_histogram(aes(y=..density..),fill="blue",color="black")+
   geom_density(color="darkblue")+labs(x="Sample mean",y="Density")
 cat("d,\n")
 set.seed(12)
-sample=sample(data$X1,size=25,replace = F)
+sample=sample(data$X1,size=n,replace = F)
 sample
 sample_mean=mean(sample)
 sample_mean
 sample_total=300*sample_mean
 sample_total
 cat("e,\n")
-s2=1/(25-1)*sum((sample-sample_mean)^2)/(length(sample-1))
+s2=sum((sample-sample_mean)^2)/(length(sample-1))
 cat("So s^2 =",s2,"\n")
-sample_variance=var(sample)
+sample_variance=s2
 sample_variance
 sample_sd=sqrt(sample_variance)
 sample_sd
@@ -41,7 +42,7 @@ mean_error=sqrt(s2/n*(1-n/300))
 CILt=sample_total-1.96*(300*mean_error)
 CIUt=sample_total+1.96*(300*mean_error)
 cat("Confidence interval for total (",CILt,",",CIUt,")","\n")
-cat("No parameter is in the interval.")
+cat("Both population parameters are in the respective intervals.")
 
 cat("g,\n")
 set.seed(12)
@@ -51,10 +52,10 @@ sample_mean2=mean(sample2)
 sample_mean2
 sample_total2=300*sample_mean2
 sample_total2
-s22=1/(100-1)*sum((sample2-sample_mean2)^2)/(length(sample2-1))
+s22=sum((sample2-sample_mean2)^2)/(length(sample2-1))
 
 cat("So s^2 =",s22,"\n")
-sample_variance2=var(sample2)
+sample_variance2=s22
 sample_variance2
 sample_sd2=sqrt(sample_variance2)
 sample_sd2
@@ -66,13 +67,13 @@ mean_error2=sqrt(s22/100*(1-100/300))
 CILt2=sample_total2-1.96*(300*mean_error2)
 CIUt2=sample_total2+1.96*(300*mean_error2)
 cat("Confidence interval for total (",CILt2,",",CIUt2,")","\n")
-cat("Both parameters within the respctive confidence intervals.")
+cat("Both parameters are within the respctive confidence intervals.")
 cat("l,\n")
-#asked claude to help me with this part
-sorted_data=data[order(data$X1),]
+#asked claude to help
+sorted_data=data[order(data$X445),]
 
-n_counties=nrow(data)
-strata_size=ceiling(n_counties/4)
+N=nrow(data)
+strata_size=ceiling(N/4)
 strata1=sorted_data[1:strata_size,]
 strata2=sorted_data[(1+strata_size):(2*strata_size),]
 strata3=sorted_data[(1+2*strata_size):(3*strata_size),]
@@ -139,4 +140,5 @@ cat("Variance comparison:\n")
 cat("Simple random sampling:", var_srs, "\n")
 cat("Proportional allocation:", var_prop, "\n")
 cat("Optimal allocation:", var_opt, "\n")
+
 
