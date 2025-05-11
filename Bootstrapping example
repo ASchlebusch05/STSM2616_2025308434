@@ -1,0 +1,14 @@
+library(tidyverse)
+data=mtcars
+head(data)
+mean_mpg=mean(data$mpg)
+B=1000
+x=nrow(data)
+boot_means=replicate(B,mean(sample(data$mpg,size=x,replace=T)))
+mean_boot=mean(boot_means)
+boot_se=sd(boot_means)
+library(ggplot2)
+boot_df=data.frame(boot_means=boot_means)
+ggplot(boot_df,aes(x=boot_means))+geom_histogram(bins=30,fill="blue",color="black")+
+  geom_vline(xintercept = mean_mpg,color="red")+geom_vline(xintercept = mean(boot_means),color="green")
+  labs(title = "Bootstrap Distribution of MPG Mean",x = "Bootstrapped Means", y = "Frequency")
