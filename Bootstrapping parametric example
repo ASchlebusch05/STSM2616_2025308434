@@ -1,0 +1,16 @@
+library(tidyverse)
+data=economics
+head(data)
+data_mean=mean(data$pce)
+data_sd=sd(data$pce)
+B=1000
+n=nrow(data)
+ggplot(data,aes(x=pce))+geom_histogram(fill="red",color="black")
+bootstrap_means=replicate(B,mean(rnorm(n,mean=data_mean,sd=data_sd)))
+mean_boot=mean(bootstrap_means)
+sd_boot=sd(bootstrap_means)
+boot_df=data.frame(bootstrap_means=bootstrap_means)
+library(ggplot2)
+ggplot(boot_df,aes(x=bootstrap_means))+geom_histogram(bins=30,fill="lightblue",color="black")+
+  geom_vline(xintercept = data_mean,color="red")+geom_vline(xintercept = mean_boot,color="darkblue", linetype="dashed")+
+  labs(title="Parametric bootstrap of pce",x="Bootstrap means",y="Frequency")
